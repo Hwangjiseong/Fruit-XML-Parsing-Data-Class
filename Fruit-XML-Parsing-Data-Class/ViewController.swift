@@ -8,7 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController, XMLParserDelegate {
+class ViewController: UIViewController, XMLParserDelegate, UITableViewDelegate, UITableViewDataSource {
+    
+    
+    @IBOutlet weak var MytableView: UITableView!
+    
+    
     // 데이터 클래스 객체 배열
     var myFruitData = [FruitData]()
     
@@ -29,6 +34,8 @@ class ViewController: UIViewController, XMLParserDelegate {
             if let myParser = XMLParser(contentsOf: path) {
                 // delegate를 ViewController와 연결
                 myParser.delegate = self
+                MytableView.dataSource = self
+                MytableView.delegate = self
                 
                 if myParser.parse() {
                     print("파싱 성공")
@@ -83,4 +90,27 @@ class ViewController: UIViewController, XMLParserDelegate {
             myFruitData.append(myItem)
         }
     }
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return myFruitData.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let myCell = MytableView.dequeueReusableCell(withIdentifier: "RE",for: indexPath)
+        
+        let cName = myCell.viewWithTag(1) as! UILabel
+       
+        let cCost = myCell.viewWithTag(3) as! UILabel
+        
+        cName.text = myFruitData[indexPath.row].name
+        
+        cCost.text = myFruitData[indexPath.row].cost
+    
+        return myCell
+        
+}
+
+    
+
 }
